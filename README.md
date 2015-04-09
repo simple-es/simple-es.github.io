@@ -1,16 +1,65 @@
-# SimpleES Pages
+---
+currentMenu: home
+---
+# Couscous Light template
 
-Documentation for the collection of "simple" Event Sourcing libraries for PHP.
+![](screenshot.png)
 
-Authored by [Jasper N. Brouwer][jaspernbrouwer].
+## Usage
 
-Under the collective flag of [Future500 B.V.][f500]
+To use the template, set it up in your `couscous.yml` configuration file:
 
-## License
+```yaml
+template:
+    url: https://github.com/CouscousPHP/Template-Light
+```
 
-[The MIT License (MIT)][license]
+## Configuration
 
+Here are all the variables you can set in your `couscous.yml`:
 
-[f500]: https://github.com/f500
-[jaspernbrouwer]: https://github.com/jaspernbrouwer
-[license]: https://github.com/simple-es/simple-es.github.io/blob/master/LICENSE
+```yaml
+# Base URL of the published website
+baseUrl: http://username.github.io/project
+
+# Used to link to the GitHub project
+github:
+    user: myself
+    repo: my-project
+
+title: My project
+subTitle: This is a great project.
+
+# The left menu bar
+menu:
+    items:
+        home:
+            text: Home page
+            # You can use relative urls
+            relativeUrl: doc/faq.html
+        foo:
+            text: Another link
+            # Or absolute urls
+            absoluteUrl: https://example.com
+```
+
+Note that the menu items can also contain HTML:
+
+```yaml
+home:
+    text: "<i class=\"fa fa-github\"></i> Home page"
+    relativeUrl: doc/faq.html
+```
+
+## Menu
+
+To set the current menu item (i.e. highlighted menu item), set the `currentMenu`
+key in the Markdown files:
+
+```markdown
+---
+currentMenu: home
+---
+
+# Welcome
+```
