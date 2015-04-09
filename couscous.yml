@@ -1,0 +1,16 @@
+template:
+    url: https://github.com/CouscousPHP/Template-Light
+
+baseUrl: https://simple-es.github.io
+
+github:
+    user: simple-es
+
+title: SimpleES
+subTitle: A collection of "simple" Event Sourcing libraries for PHP
+
+menu:
+    items:
+        home:
+            text: Home page
+            relativeUrl: index.html
