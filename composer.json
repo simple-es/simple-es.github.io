@@ -1,5 +1,18 @@
 {
-    "require": {
-        "couscous/couscous": "~1.1"
+  "name": "simple-es/simple-es.github.io",
+  "description": "Documentation for all SimpleES libraries",
+  "keywords": ["simple", "simplees", "simple-es", "event", "sourcing", "event-sourcing"],
+  "homepage": "https://simple-es.github.io",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jasper N. Brouwer",
+      "email": "jasper@future500.nl"
     }
+  ],
+
+  "require": {
+    "php": ">=5.4",
+    "couscous/couscous": "~1.1"
+  }
 }
