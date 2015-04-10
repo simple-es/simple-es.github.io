@@ -1,10 +1,11 @@
 template:
-    url: https://github.com/CouscousPHP/Template-Light
+    directory: website
 
 baseUrl: https://simple-es.github.io
 
 github:
     user: simple-es
+    repo: event-sourcing
 
 title: SimpleES
 subTitle: A collection of "simple" Event Sourcing libraries for PHP
@@ -12,5 +13,30 @@ subTitle: A collection of "simple" Event Sourcing libraries for PHP
 menu:
     items:
         home:
-            text: Home page
-            relativeUrl: index.html
+            text: Home
+            relativeUrl:
+        events:
+            text: Events
+            relativeUrl: event-sourcing/events
+        aggregates:
+            text: Aggregates
+            relativeUrl: event-sourcing/aggregates
+        event_store:
+            text: Event Store
+            relativeUrl: event-sourcing/event-store
+        aggregate_manager:
+            text: Aggregate Manager
+            relativeUrl: event-sourcing/aggregate-manager
+
+        doctrine_dbal_bridge:
+            text: Doctrine DBAL Bridge
+            relativeUrl: doctrine-dbal-bridge
+        jms_serializer_bridge:
+            text: JMS Serializer Bridge
+            relativeUrl: jms-serializer-bridge
+        message_bus_bridge:
+            text: MessageBus Bridge
+            relativeUrl: message-bus-bridge
+        ramsey_uuid_bridge:
+            text: Ramsey UUID Bridge
+            relativeUrl: ramsey-uuid-bridge

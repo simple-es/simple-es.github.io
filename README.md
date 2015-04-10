@@ -1,10 +1,29 @@
-# SimpleES Pages
+# Event Sourcing <small>A "simple" Event Sourcing library for PHP</small>
 
-Documentation for the collection of "simple" Event Sourcing libraries for PHP.
+[![Build Status](https://travis-ci.org/simple-es/event-sourcing.svg?branch=master)](https://travis-ci.org/simple-es/event-sourcing)
 
 Authored by [Jasper N. Brouwer][jaspernbrouwer].
 
 Under the collective flag of [Future500 B.V.][f500]
+
+
+## Usage
+
+These libraries are still in their development stage, but are gradually maturing.
+
+A colleague and I are currently working on a side project project using these libraries. That should should prove their worth in production.
+
+But please read on if you're interested!
+
+
+## Installation
+
+Simply install the Event Sourcing library with [Composer][composer]:
+
+```nohighlight
+composer.phar require simple-es/event-sourcing ~1.0@dev
+```
+
 
 ## License
 
@@ -13,4 +32,5 @@ Under the collective flag of [Future500 B.V.][f500]
 
 [f500]: https://github.com/f500
 [jaspernbrouwer]: https://github.com/jaspernbrouwer
+[composer]: https://getcomposer.org
 [license]: https://github.com/simple-es/simple-es.github.io/blob/master/LICENSE
