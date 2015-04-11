@@ -21,12 +21,12 @@ menu:
         aggregates:
             text: Aggregates
             relativeUrl: event-sourcing/aggregates
-        event_store:
-            text: Event Store
-            relativeUrl: event-sourcing/event-store
         aggregate_manager:
             text: Aggregate Manager
             relativeUrl: event-sourcing/aggregate-manager
+        event_store:
+            text: Event Store
+            relativeUrl: event-sourcing/event-store
 
         doctrine_dbal_bridge:
             text: Doctrine DBAL Bridge

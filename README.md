@@ -1,3 +1,7 @@
+---
+currentMenu: home
+---
+
 # Event Sourcing <small>A "simple" Event Sourcing library for PHP</small>
 
 [![Build Status](https://travis-ci.org/simple-es/event-sourcing.svg?branch=master)](https://travis-ci.org/simple-es/event-sourcing)
@@ -13,7 +17,7 @@ These libraries are still in their development stage, but are gradually maturing
 
 A colleague and I are currently working on a side project project using these libraries. That should should prove their worth in production.
 
-But please read on if you're interested!
+But please [read on](/event-sourcing/events) if you're interested!
 
 
 ## Installation
