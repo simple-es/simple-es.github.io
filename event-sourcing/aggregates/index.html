@@ -45,19 +45,19 @@
                                         Events
                                     </a>
                                 </li>
-                                                            <li class="">
+                                                            <li class="active">
                                     <a href="https://simple-es.github.io/event-sourcing/aggregates">
                                         Aggregates
                                     </a>
                                 </li>
                                                             <li class="">
-                                    <a href="https://simple-es.github.io/event-sourcing/event-store">
-                                        Event Store
+                                    <a href="https://simple-es.github.io/event-sourcing/aggregate-manager">
+                                        Aggregate Manager
                                     </a>
                                 </li>
                                                             <li class="">
-                                    <a href="https://simple-es.github.io/event-sourcing/aggregate-manager">
-                                        Aggregate Manager
+                                    <a href="https://simple-es.github.io/event-sourcing/event-store">
+                                        Event Store
                                     </a>
                                 </li>
                                                             <li class="">
@@ -87,6 +87,139 @@
                 
                 <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
                     <h1>Aggregates</h1>
+<p>Remember that with Event Sourcing an aggregate does not contain the state as we need it in the front-end of our application.
+So our basket is not going to contain a list of products that were added to it.
+In stead we are going keep track of events; that a basket was picked up and products were added to it.</p>
+<p>This doesn't mean that an aggregate doesn't contain any state at all.
+We need to know which basket we're dealing with, so we keep track of its identifier.</p>
+<p>And we need the minimum amount of state to be able to protect invariants / enforce business rules.
+To show this, we need a business rule.</p>
+<p><em>The basket cannot contain more than 3 products.</em></p>
+<p>In the real world we probably don't want to enforce this limit, but for the sake of this demonstration we will.
+So we'll need to keep track of the number of products that were added. Without that number, we cannot determine if the limit is reached.</p>
+<h3>Basket</h3>
+<p>Let me present the entire basket aggregate:</p>
+<pre><code class="language-php">use SimpleES\EventSourcing\Aggregate\EventTrackingCapabilities;
+use SimpleES\EventSourcing\Aggregate\TracksEvents;
+use SimpleES\EventSourcing\Event\AggregateHistory;
+
+final class Basket implements TracksEvents
+{
+    use EventTrackingCapabilities;
+
+    /** @var BasketId */
+    private $basketId;
+
+    /** @var int */
+    private $productCount;
+
+    /**
+     * @param BasketId $basketId
+     * @return Basket
+     */
+    public static function pickUp(BasketId $basketId)
+    {
+        $basket = new Basket();
+        $basket-&gt;recordThat(new BasketWasPickedUp($basketId));
+
+        return $basket;
+    }
+
+    /** @param ProductId $productId */
+    public function addProduct(ProductId $productId)
+    {
+        $this-&gt;guardProductLimit();
+
+        $this-&gt;recordThat(new ProductWasAddedToBasket($this-&gt;basketId, $productId));
+    }
+
+    /** @return BasketId */
+    public function basketId()
+    {
+        return $this-&gt;basketId;
+    }
+
+    /** @param BasketWasPickedUp $event */
+    private function whenBasketWasPickedUp(BasketWasPickedUp $event)
+    {
+        $this-&gt;basketId     = $event-&gt;basketId();
+        $this-&gt;productCount = 0;
+    }
+
+    /** @param ProductWasAddedToBasket $event */
+    private function whenProductWasAddedToBasket(ProductWasAddedToBasket $event)
+    {
+        $this-&gt;productCount++;
+    }
+
+    /** @throws BasketLimitReached */
+    private function guardProductLimit()
+    {
+        if ($this-&gt;productCount == 3) {
+            throw new \OverflowException('Limit of 3 products exceeded');
+        }
+    }
+}</code></pre>
+<p>Now let's go over some details.</p>
+<h3>Basket was picked up</h3>
+<pre><code class="language-php">    /**
+     * @param BasketId $basketId
+     * @return Basket
+     */
+    public static function pickUp(BasketId $basketId)
+    {
+        $basket = new Basket();
+        $basket-&gt;recordThat(new BasketWasPickedUp($basketId));
+
+        return $basket;
+    }</code></pre>
+<p>With this static factory method we instantiate the basket and record the event of picking up the basket.
+<code>recordThat(DomainEvent $event)</code> is a method that will take care of recording and applying the event.</p>
+<p>Applying the event means protecting the invariants and changing the state if needed.
+It's important that this happens separately from recording the event!</p>
+<p>Recorded events are to be stored in an event store.
+When we later fetch those events and replay them to get our aggregate back, we need to apply them again <em>without</em> getting recorded.
+Otherwise they are stored again and we've effectively duplicated all the events.</p>
+<p>The <code>recordThat(DomainEvent $event)</code> (provided by the <code>EventTrackingCapabilities</code> trait) will search for a method with the same name as the event preceded by &quot;when&quot;.
+In other words, for the event <code>ProductWasAddedToBasket</code> the method <code>whenProductWasAddedToBasket</code> is searched for.
+If the method exists, it will be called with the event as argument.</p>
+<pre><code class="language-php">    /** @param BasketWasPickedUp $event */
+    private function whenBasketWasPickedUp(BasketWasPickedUp $event)
+    {
+        $this-&gt;basketId     = $event-&gt;basketId();
+        $this-&gt;productCount = 0;
+    }</code></pre>
+<p>This will set the identifier of the basket and set the current product count to zero.</p>
+<h3>Product was added to basket</h3>
+<pre><code class="language-php">    /**
+     * @param ProductId $productId
+     */
+    public function addProduct(ProductId $productId)
+    {
+        $this-&gt;guardProductLimit();
+
+        $this-&gt;recordThat(new ProductWasAddedToBasket($this-&gt;basketId, $productId));
+    }
+
+    /** @throws BasketLimitReached */
+    private function guardProductLimit()
+    {
+        if ($this-&gt;productCount == 3) {
+            throw new \OverflowException('Limit of 3 products exceeded');
+        }
+    }</code></pre>
+<p>The first thing we do when a product is added to the basket is check the product limit.
+If the basket already contains 3 products, an exception is thrown.
+This way we enforce our business rule.</p>
+<p>Next we record the event.</p>
+<p>But how does the current product count ever reach 3?</p>
+<pre><code class="language-php">    /** @param ProductWasAddedToBasket $event */
+    private function whenProductWasAddedToBasket(ProductWasAddedToBasket $event)
+    {
+        $this-&gt;productCount++;
+    }</code></pre>
+<p>By applying the event of course! Whenever a product is added, we increase the product count.</p>
+<h2>Internals</h2>
 <p>Coming soon...</p>
                 </section>
 

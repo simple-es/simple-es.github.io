@@ -77,21 +77,6 @@ header.navbar {
     margin-left: 10px;
 }
 
-@media (min-width: 768px) {
-    #sidebar {
-        position:fixed;
-        margin-top: 30px;
-    }
-}
-@media (max-width: 960px) {
-    body {
-        font-size: 15px;
-    }
-    pre {
-        font-size: 14px;
-    }
-}
-
 .page-header {
     margin-top: 0;
 }
@@ -104,7 +89,7 @@ pre {
     padding: 0;
     border-radius: 4px;
     margin: 15px;
-    font-size: 15px;
+    font-size: 13px;
 }
 pre code {
     background: none repeat scroll 0 0 #f8f8f8;
@@ -113,4 +98,19 @@ pre code {
     display: block;
     overflow-x: auto;
     padding: 0.5em;
+}
+
+@media (min-width: 768px) {
+    #sidebar {
+        position:fixed;
+        margin-top: 30px;
+    }
+}
+@media (max-width: 960px) {
+    body {
+        font-size: 15px;
+    }
+    pre {
+        font-size: 12px;
+    }
 }
