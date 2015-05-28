@@ -11,7 +11,7 @@ Authored by [Jasper N. Brouwer][jaspernbrouwer].
 Under the collective flag of [Future500 B.V.][f500]
 
 
-## Usage
+## Disclaimer
 
 These libraries are still in their development stage, but are gradually maturing.
 
@@ -22,7 +22,7 @@ But please [read on](/event-sourcing/events) if you're interested!
 
 ## Installation
 
-Simply install the Event Sourcing library with [Composer][composer]:
+Simply require the Event Sourcing library with [Composer][composer]:
 
 ```nohighlight
 composer.phar require simple-es/event-sourcing ~1.0@dev
@@ -37,4 +37,4 @@ composer.phar require simple-es/event-sourcing ~1.0@dev
 [f500]: https://github.com/f500
 [jaspernbrouwer]: https://github.com/jaspernbrouwer
 [composer]: https://getcomposer.org
-[license]: https://github.com/simple-es/simple-es.github.io/blob/master/LICENSE
+[license]: https://github.com/simple-es/event-sourcing/blob/master/LICENSE
