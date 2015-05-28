@@ -17,14 +17,11 @@
 
             <a class="navbar-brand" href="https://simple-es.github.io/">
                 SimpleES
-                <small class="hidden-xs hidden-sm">
+                <small class="hidden-xs">
                     A collection of &quot;simple&quot; Event Sourcing libraries for PHP
                 </small>
             </a>
 
-                            <a href="https://github.com/simple-es/event-sourcing">
-                    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
-                </a>
             
         </header>
 
@@ -34,60 +31,240 @@
                 
                     <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
 
-                        <ul class="nav nav-pills nav-stacked">
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/">
-                                        Home
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/event-sourcing/events">
-                                        Events
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/event-sourcing/aggregates">
-                                        Aggregates
-                                    </a>
-                                </li>
-                                                            <li class="active">
-                                    <a href="https://simple-es.github.io/event-sourcing/aggregate-manager">
-                                        Aggregate Manager
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/event-sourcing/event-store">
-                                        Event Store
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/doctrine-dbal-bridge">
-                                        Doctrine DBAL Bridge
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/jms-serializer-bridge">
-                                        JMS Serializer Bridge
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/message-bus-bridge">
-                                        MessageBus Bridge
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/ramsey-uuid-bridge">
-                                        Ramsey UUID Bridge
-                                    </a>
-                                </li>
-                                                    </ul>
-
+                                                                                    <p class="sidebar-section">
+                                    Event Sourcing
+                                </p>
+                            
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/">
+                                            Home
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/event-sourcing/events">
+                                            Events
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/event-sourcing/aggregates">
+                                            Aggregates
+                                        </a>
+                                    </li>
+                                                                    <li class="active">
+                                        <a href="https://simple-es.github.io/event-sourcing/aggregate-manager">
+                                            Aggregate Manager
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/event-sourcing/event-store">
+                                            Event Store
+                                        </a>
+                                    </li>
+                                                            </ul>
+                                                                                    <p class="sidebar-section">
+                                    Bridges
+                                </p>
+                            
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/bridges/doctrine-dbal">
+                                            Doctrine DBAL
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/bridges/jms-serializer">
+                                            JMS Serializer
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/bridges/ramsey-uuid">
+                                            Ramsey UUID
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/bridges/message-bus">
+                                            SimpleBus
+                                        </a>
+                                    </li>
+                                                            </ul>
+                        
                     </nav>
 
                 
-                <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
                     <h1>Aggregate Manager</h1>
-<p>Coming soon...</p>
+<p>The aggregate manager should be used as entry-point for storing and retrieving aggregates.
+It uses a repository that will store and read the recorded events in/from an event store,
+as well as an identity map to make sure only a single instance of an aggregate is kept in memory.</p>
+<p>Before diving into the details of setting up the aggregate manager, let's see how it is actually used.</p>
+<h2>Usage and flow</h2>
+<p>In order to understand how this library deals with storing and retrieving aggregates,
+we'll walk through what exactly goes on when we do this.</p>
+<h3>Adding an aggregate</h3>
+<p>We begin with adding our basket to the aggregate manager:</p>
+<pre><code class="language-php">$basket = Basket::pickUp($basketId);
+$basket-&gt;addProduct($productId);
+
+$aggregateManager-&gt;add($basket);</code></pre>
+<p>The aggregate manager will first check its identity map.
+If the basket is not already in there, the aggregate manager will add it.</p>
+<p>Then the aggregate manager will add the basket to its repository.</p>
+<p>The repository will check if the basket has recorded events.
+If not, it simply returns, nothing happens.</p>
+<p>In our case we do have events, so the repository will extract and erase them from the basket.</p>
+<p>Those events are then wrapped in <code>EventEnvelope</code>s.
+These envelopes contain extra information like an <code>EventId</code>, the name of the event, the version of the aggregate,
+a <code>Timestamp</code> of when the event took place, and <code>Metadata</code>.</p>
+<p>Note that the aggregate itself isn't aware of its version.
+The repository uses an <code>EventWrapper</code> which will keep track of the version.</p>
+<p>Also, it initially has no meta data, but meta data can be enriched later on.
+This is covered in the <a href="/event-sourcing/event-store">Event Store</a> section.</p>
+<p>So the recorded events are converted (by the event wrapper) into an <code>EventStream</code> containing the event envelopes.</p>
+<p>And finally that event stream is passed to an event store.</p>
+<h3>Getting an aggregate</h3>
+<p>Again we begin with the aggregate manager:</p>
+<pre><code class="language-php">$basket = $aggregateManager-&gt;get($basketId);</code></pre>
+<p>The aggregate manager will first check its identity map.
+If the basket is already in there, it will be returned, nothing further happens.</p>
+<p>If it isn't in there, the aggregate manager will consult its repository.</p>
+<p>The repository will read an <code>EventStream</code> from an event store.
+If no events can be found, an exception is thrown.</p>
+<p>Otherwise the event stream is converted to <code>AggregateHistory</code>.
+This means that the envelopes in the event stream are unwrapped, resulting in the original domain events.</p>
+<p>The repository then uses a factory to reconstitute the basket from the retrieved history.</p>
+<p>And finally we get the reconstituted aggregate.</p>
+<h3>Clearing the identity map</h3>
+<p>If need be, the aggregate manager can be cleared:</p>
+<pre><code class="language-php">$aggregateManager-&gt;clear();</code></pre>
+<p>This basically means that its identity map is cleared. Later added and retrieved aggregates are new objects.</p>
+<h2>Setup</h2>
+<p>Before we can set up the aggregate manager itself, we need to make some other things in order.
+We'll start the deepest dependencies first.</p>
+<h4>Identifier generator</h4>
+<p>The event wrapper needs to be able to generate <code>EventId</code>s.
+So we need an implementation of <code>SimpleES\EventSourcing\Identifier\GeneratesIdentifiers</code>.
+And this library does <em>not</em> provide one!</p>
+<p>You can use the <a href="/bridges/ramsey-uuid">Ramsey UUID Bridge</a>,
+which in turn uses <a href="https://github.com/ramsey/uuid">Ramsey UUID</a> to generate (version 4) UUIDs.</p>
+<h4>Event-name resolver</h4>
+<p>An <code>EventEnvelope</code> requires the name of an event to convey the contract to the outside world.
+But domain events in this library don't have the concept of a name, other than its class-name.</p>
+<p>This library doesn't force you to use class-names, because it could well be that wouldn't make sense.
+What if your events are consumed by another bounded context which uses different classes or even a different language?</p>
+<p>So the event wrapper needs a way to resolve event-names, as it will wrap events in an envelope.</p>
+<p>You can use a provided event-name resolver that maps the class-name to a name of your choice:</p>
+<pre><code class="language-php">use SimpleES\EventSourcing\Event\NameResolver\MappingEventNameResolver;
+
+$map = [
+    'BasketWasPickedUp'       =&gt; 'basket_was_picked_up',
+    'ProductWasAddedToBasket' =&gt; 'product_was_added_to_basket'
+];
+
+$eventNameResolver = MappingEventNameResolver($map);</code></pre>
+<p>If you do want to stick to the class-name, this library also provides a solution:</p>
+<pre><code class="language-php">use SimpleES\EventSourcing\Event\NameResolver\ClassBasedEventNameResolver;
+
+$eventNameResolver = new ClassBasedEventNameResolver();</code></pre>
+<p>You can also implement a custom event-name resolver,
+as long as you adhere the <code>SimpleES\EventSourcing\Event\NameResolver\ResolvesEventNames</code> interface.</p>
+<h4>Event wrapper</h4>
+<p>Now that we have all dependencies for the event wrapper in place, we can create it:</p>
+<pre><code class="language-php">use SimpleES\EventSourcing\Event\Wrapper\EventWrapper;
+
+$eventWrapper = new EventWrapper(
+    $identifierGenerator,
+    $eventNameResolver
+);</code></pre>
+<p>By default the event wrapper will wrap events in envelopes of the class <code>SimpleES\EventSourcing\Event\Stream\EventEnvelope</code>.
+But it can use any class that implements <code>SimpleES\EventSourcing\Event\Stream\EnvelopsEvent</code>.</p>
+<p>You could create a custom event envelope, and specify its class-name as 3rd argument:</p>
+<pre><code class="language-php">use SimpleES\EventSourcing\Event\Wrapper\EventWrapper;
+
+$eventWrapper = new EventWrapper(
+    $identifierGenerator,
+    $eventNameResolver,
+    'CustomEventEnvelope'
+);</code></pre>
+<h4>Aggregate factory</h4>
+<p>Aggregates need to be reconstituted from their history.
+This library provides a factory that takes the history, maps the identifier class-name to the aggregate class-name,
+and reconstitutes it:</p>
+<pre><code class="language-php">use SimpleES\EventSourcing\Aggregate\Factory\MappingAggregateFactory;
+
+$map = [
+    'BasketId' =&gt; 'Basket'
+];
+
+$aggregateFactory = new MappingAggregateFactory($map);</code></pre>
+<p>If you're in need of a different approach,
+implement <code>SimpleES\EventSourcing\Aggregate\Factory\ReconstitutesAggregates</code> to create your own factory.</p>
+<h4>Aggregate repository</h4>
+<p>Now we can proceed with the repository:</p>
+<pre><code class="language-php">use SimpleES\EventSourcing\Aggregate\Repository\AggregateRepository;
+
+$repository = new AggregateRepository(
+    $eventWrapper,
+    $eventStore,
+    $aggregateFactory
+);</code></pre>
+<p>Wait, We haven't created an event store yet! This is covered in the <a href="/event-sourcing/event-store">next section</a>.</p>
+<h4>Identity map</h4>
+<p>Before we can create the aggregate manager itself, the only thing left is the identity map.
+Creating it is fairly simple:</p>
+<pre><code class="language-php">use SimpleES\EventSourcing\IdentityMap\IdentityMap;
+
+$identityMap = new IdentityMap();</code></pre>
+<h4>Aggregate manager</h4>
+<p>Finally we can create the aggregate manager:</p>
+<pre><code class="language-php">use SimpleES\EventSourcing\Aggregate\Manager\AggregateManager;
+
+$aggregateManager = new AggregateManager(
+    $identityMap,
+    $repository
+);</code></pre>
+<h3>To sum it all up</h3>
+<pre><code class="language-php">use SimpleES\EventSourcing\Aggregate\Factory\MappingAggregateFactory;
+use SimpleES\EventSourcing\Aggregate\Manager\AggregateManager;
+use SimpleES\EventSourcing\Aggregate\Repository\AggregateRepository;
+use SimpleES\EventSourcing\Event\NameResolver\MappingEventNameResolver;
+use SimpleES\EventSourcing\Event\Wrapper\EventWrapper;
+use SimpleES\EventSourcing\IdentityMap\IdentityMap;
+
+$identifierGenerator = // ...
+
+$eventNameMap = [
+    'BasketWasPickedUp'       =&gt; 'basket_was_picked_up',
+    'ProductWasAddedToBasket' =&gt; 'product_was_added_to_basket'
+];
+
+$eventNameResolver = MappingEventNameResolver($eventNameMap);
+
+$eventWrapper = new EventWrapper(
+    $identifierGenerator,
+    $eventNameResolver
+);
+
+$aggregateMap = [
+    'BasketId' =&gt; 'Basket'
+];
+
+$aggregateFactory = new MappingAggregateFactory($aggregateMap);
+
+$eventStore = // ...
+
+$repository = new AggregateRepository(
+    $eventWrapper,
+    $eventStore,
+    $aggregateFactory
+);
+
+$identityMap = new IdentityMap();
+
+$aggregateManager = new AggregateManager(
+    $identityMap,
+    $repository
+);</code></pre>
                 </section>
 
             </div>

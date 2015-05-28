@@ -17,14 +17,11 @@
 
             <a class="navbar-brand" href="https://simple-es.github.io/">
                 SimpleES
-                <small class="hidden-xs hidden-sm">
+                <small class="hidden-xs">
                     A collection of &quot;simple&quot; Event Sourcing libraries for PHP
                 </small>
             </a>
 
-                            <a href="https://github.com/simple-es/event-sourcing">
-                    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
-                </a>
             
         </header>
 
@@ -34,58 +31,68 @@
                 
                     <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
 
-                        <ul class="nav nav-pills nav-stacked">
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/">
-                                        Home
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/event-sourcing/events">
-                                        Events
-                                    </a>
-                                </li>
-                                                            <li class="active">
-                                    <a href="https://simple-es.github.io/event-sourcing/aggregates">
-                                        Aggregates
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/event-sourcing/aggregate-manager">
-                                        Aggregate Manager
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/event-sourcing/event-store">
-                                        Event Store
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/doctrine-dbal-bridge">
-                                        Doctrine DBAL Bridge
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/jms-serializer-bridge">
-                                        JMS Serializer Bridge
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/message-bus-bridge">
-                                        MessageBus Bridge
-                                    </a>
-                                </li>
-                                                            <li class="">
-                                    <a href="https://simple-es.github.io/ramsey-uuid-bridge">
-                                        Ramsey UUID Bridge
-                                    </a>
-                                </li>
-                                                    </ul>
-
+                                                                                    <p class="sidebar-section">
+                                    Event Sourcing
+                                </p>
+                            
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/">
+                                            Home
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/event-sourcing/events">
+                                            Events
+                                        </a>
+                                    </li>
+                                                                    <li class="active">
+                                        <a href="https://simple-es.github.io/event-sourcing/aggregates">
+                                            Aggregates
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/event-sourcing/aggregate-manager">
+                                            Aggregate Manager
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/event-sourcing/event-store">
+                                            Event Store
+                                        </a>
+                                    </li>
+                                                            </ul>
+                                                                                    <p class="sidebar-section">
+                                    Bridges
+                                </p>
+                            
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/bridges/doctrine-dbal">
+                                            Doctrine DBAL
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/bridges/jms-serializer">
+                                            JMS Serializer
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/bridges/ramsey-uuid">
+                                            Ramsey UUID
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://simple-es.github.io/bridges/message-bus">
+                                            SimpleBus
+                                        </a>
+                                    </li>
+                                                            </ul>
+                        
                     </nav>
 
                 
-                <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
                     <h1>Aggregates</h1>
 <p>Remember that with Event Sourcing an aggregate does not contain the state as we need it in the front-end of our application.
 So our basket is not going to contain a list of products that were added to it.
@@ -96,8 +103,9 @@ We need to know which basket we're dealing with, so we keep track of its identif
 To show this, we need a business rule.</p>
 <p><em>The basket cannot contain more than 3 products.</em></p>
 <p>In the real world we probably don't want to enforce this limit, but for the sake of this demonstration we will.
-So we'll need to keep track of the number of products that were added. Without that number, we cannot determine if the limit is reached.</p>
-<h3>Basket</h3>
+So we'll need to keep track of the number of products that were added.
+Without that number, we cannot determine if the limit is reached.</p>
+<h2>Basket</h2>
 <p>Let me present the entire basket aggregate:</p>
 <pre><code class="language-php">use SimpleES\EventSourcing\Aggregate\EventTrackingCapabilities;
 use SimpleES\EventSourcing\Aggregate\TracksEvents;
@@ -139,6 +147,12 @@ final class Basket implements TracksEvents
         return $this-&gt;basketId;
     }
 
+    /** @return Identifies */
+    public function aggregateId()
+    {
+        return $this-&gt;basketId();
+    }
+
     /** @param BasketWasPickedUp $event */
     private function whenBasketWasPickedUp(BasketWasPickedUp $event)
     {
@@ -155,7 +169,7 @@ final class Basket implements TracksEvents
     /** @throws BasketLimitReached */
     private function guardProductLimit()
     {
-        if ($this-&gt;productCount == 3) {
+        if ($this-&gt;productCount === 3) {
             throw new \OverflowException('Limit of 3 products exceeded');
         }
     }
@@ -178,9 +192,9 @@ final class Basket implements TracksEvents
 <p>Applying the event means protecting the invariants and changing the state if needed.
 It's important that this happens separately from recording the event!</p>
 <p>Recorded events are to be stored in an event store.
-When we later fetch those events and replay them to get our aggregate back, we need to apply them again <em>without</em> getting recorded.
+When we later fetch those events and replay them to get our basket back, we need to apply them again <em>without</em> getting recorded.
 Otherwise they are stored again and we've effectively duplicated all the events.</p>
-<p>The <code>recordThat(DomainEvent $event)</code> (provided by the <code>EventTrackingCapabilities</code> trait) will search for a method with the same name as the event preceded by &quot;when&quot;.
+<p>The <code>recordThat(DomainEvent $event)</code> (provided by the <code>EventTrackingCapabilities</code> trait) will search for a method with the same class-name as the event preceded by &quot;when&quot;.
 In other words, for the event <code>ProductWasAddedToBasket</code> the method <code>whenProductWasAddedToBasket</code> is searched for.
 If the method exists, it will be called with the event as argument.</p>
 <pre><code class="language-php">    /** @param BasketWasPickedUp $event */
@@ -190,10 +204,12 @@ If the method exists, it will be called with the event as argument.</p>
         $this-&gt;productCount = 0;
     }</code></pre>
 <p>This will set the identifier of the basket and set the current product count to zero.</p>
+<blockquote>
+<p>Only the last part of the FQCN (fully qualified class-name) of an event is used.
+So <code>My\First\EventHappened</code> should be applied by the method <code>whenEventHappened</code>.</p>
+</blockquote>
 <h3>Product was added to basket</h3>
-<pre><code class="language-php">    /**
-     * @param ProductId $productId
-     */
+<pre><code class="language-php">    /** @param ProductId $productId */
     public function addProduct(ProductId $productId)
     {
         $this-&gt;guardProductLimit();
@@ -204,7 +220,7 @@ If the method exists, it will be called with the event as argument.</p>
     /** @throws BasketLimitReached */
     private function guardProductLimit()
     {
-        if ($this-&gt;productCount == 3) {
+        if ($this-&gt;productCount === 3) {
             throw new \OverflowException('Limit of 3 products exceeded');
         }
     }</code></pre>
@@ -219,8 +235,45 @@ This way we enforce our business rule.</p>
         $this-&gt;productCount++;
     }</code></pre>
 <p>By applying the event of course! Whenever a product is added, we increase the product count.</p>
+<h3>Usage</h3>
+<p>Now we can start working with out basket:</p>
+<pre><code class="language-php">$basketId = BasketId::fromString('basket-1');
+$basket   = Basket::pickUp($basketId);
+
+$productId = ProductId('product-1');
+$basket-&gt;addProduct($productId);</code></pre>
+<p><a href="/event-sourcing/aggregate-manager">Next up</a> is storing our basket and retrieve it again.</p>
 <h2>Internals</h2>
-<p>Coming soon...</p>
+<p>Aggregates must implement the <code>TracksEvents</code> interface.
+This interface has a couple of methods:</p>
+<ul>
+<li><code>recordedEvents()</code></li>
+<li><code>hasRecordedEvents()</code></li>
+<li><code>eraseRecordedEvents()</code></li>
+</ul>
+<p>The implementation of these methods is provided by the <code>EventTrackingCapabilities</code> trait.
+You don't need to worry about these unless you're implementing a custom (decorator for an) <a href="/event-sourcing/event-store">event store</a>.</p>
+<ul>
+<li><code>fromHistory(AggregateHistory $aggregateHistory)</code></li>
+</ul>
+<p>This static factory method will reconstitute the aggregate from the history read from an event store.
+Its implementation is also covered by the <code>EventTrackingCapabilities</code> trait.</p>
+<ul>
+<li><code>aggregateId()</code></li>
+</ul>
+<p>This method should return the identifier of the aggregate.
+As the library cannot know what that is, <em>you should implement it yourself</em>.
+Usually a proxy to the method returning the identifier is enough, like in our example:</p>
+<pre><code class="language-php">    /** @return Identifies */
+    public function aggregateId()
+    {
+        return $this-&gt;basketId();
+    }</code></pre>
+<p>Besides implementing most of the <code>TracksEvents</code> interface, the <code>EventTrackingCapabilities</code> trait has a powerful helper method:</p>
+<ul>
+<li><code>recordThat(DomainEvent $event)</code></li>
+</ul>
+<p>Like we've seen in our basket, this method makes sure the event is recorded and applied.</p>
                 </section>
 
             </div>

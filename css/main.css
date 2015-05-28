@@ -49,6 +49,13 @@ h2 {
 h3 {
     font-size: 25px;
 }
+h4 {
+    font-size: 20px;
+}
+
+blockquote {
+    font-size: 16px;
+}
 
 li {
     margin-bottom: 3px;
@@ -80,16 +87,25 @@ header.navbar {
 .page-header {
     margin-top: 0;
 }
+.page-header h1 > small {
+    font-size: 22px;
+}
 
 #sidebar .text-muted {
     color: #bbbbbb;
+}
+#sidebar .sidebar-section {
+    margin: 0 0 3px 0;
+    padding: 5px 0;
+}
+#sidebar .nav > li > a {
+    padding: 5px 10px 5px 15px;
 }
 
 pre {
     padding: 0;
     border-radius: 4px;
     margin: 15px;
-    font-size: 13px;
 }
 pre code {
     background: none repeat scroll 0 0 #f8f8f8;
@@ -98,19 +114,26 @@ pre code {
     display: block;
     overflow-x: auto;
     padding: 0.5em;
+    line-height: 20px;
+}
+code, pre code {
+    font-size: 13px;
 }
 
 @media (min-width: 768px) {
     #sidebar {
-        position:fixed;
-        margin-top: 30px;
+        position: fixed;
+        margin-top: 23px;
+    }
+    #sidebar .sidebar-section:first-child {
+        padding-top: 0;
     }
 }
 @media (max-width: 960px) {
     body {
         font-size: 15px;
     }
-    pre {
+    code, pre code {
         font-size: 12px;
     }
 }
