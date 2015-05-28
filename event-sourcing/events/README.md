@@ -6,7 +6,8 @@ currentMenu: events
 
 Because we're diving into the subject of Event Sourcing, we need some events to source!
 
-Let's imagine we're building a shopping basket. Basically we need to be able to pick a basket up and put products in it.
+Let's imagine we're building a shopping basket.
+Basically we need to be able to pick a basket up and put products in it.
 In the real world we would probably want to do more with a basket, but for now this will suffice.
 
 
@@ -38,7 +39,8 @@ final class BasketWasPickedUp implements DomainEvent
 
 Notice the event implements `DomainEvent`, which is needed for the library to recognize it as an event.
 
-The event contains a `BasketId`, which is effectively the identifier of our basket aggregate. We'll cover the aggregate itself in the next chapter.
+The event contains a `BasketId`, which is effectively the identifier of our basket aggregate.
+We'll cover the aggregate itself in the next chapter.
 
 Identifiers are easily created:
 
@@ -110,4 +112,5 @@ final class ProductId implements Identifies
 }
 ```
 
-And there we have our 2 events. Let's see how we can make them happen [next](/event-sourcing/aggregates).
+And there we have our 2 events.
+Let's see how we can make them happen [next](/event-sourcing/aggregates).
