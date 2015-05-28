@@ -6,10 +6,8 @@
 
         <title>SimpleES</title>
 
-        <link href="https://simple-es.github.io/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-        <link href="https://simple-es.github.io/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="https://simple-es.github.io/css/highlight.github.css" rel="stylesheet" type="text/css">
-        <link href="https://simple-es.github.io/css/main.css" rel="stylesheet" type="text/css">
+        <link href="https://simple-es.github.io/css/styles.css" rel="stylesheet" type="text/css">
+        <link href="https://simple-es.github.io/css/highlight-solarized-light.css" rel="stylesheet" type="text/css">
     </head>
     <body>
 
@@ -29,7 +27,7 @@
             <div class="row">
 
                 
-                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+                    <nav class="sidebar col-sm-3 col-lg-2" role="navigation">
 
                                                                                     <p class="sidebar-section">
                                     Event Sourcing
@@ -100,8 +98,10 @@ In stead we are going keep track of events; that a basket was picked up and prod
 <p>This doesn't mean that an aggregate doesn't contain any state at all.
 We need to know which basket we're dealing with, so we keep track of its identifier.</p>
 <p>And we need the minimum amount of state to be able to protect invariants / enforce business rules.
-To show this, we need a business rule.</p>
+To show this, we need a business rule:</p>
+<blockquote>
 <p><em>The basket cannot contain more than 3 products.</em></p>
+</blockquote>
 <p>In the real world we probably don't want to enforce this limit, but for the sake of this demonstration we will.
 So we'll need to keep track of the number of products that were added.
 Without that number, we cannot determine if the limit is reached.</p>
