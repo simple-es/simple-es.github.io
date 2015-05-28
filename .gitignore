@@ -1,4 +1,5 @@
 /.couscous/
 /.idea/
+/node_modules/
 /vendor/
 /website/

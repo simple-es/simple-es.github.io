@@ -1,0 +1,21 @@
+{
+    "name": "simple-es.github.io",
+    "description": "Documentation for all SimpleES libraries",
+    "homepage": "https://simple-es.github.io",
+    "version": "1.0.0",
+    "license": "MIT",
+    "author": {
+        "name": "Jasper N. Brouwer",
+        "email": "jasper@future500.nl"
+    },
+
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/simple-es/simple-es.github.io.git"
+    },
+
+    "devDependencies": {
+        "grunt": "~0.4.5",
+        "grunt-contrib-less": "~1.0"
+    }
+}
