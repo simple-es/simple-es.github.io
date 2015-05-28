@@ -17,11 +17,11 @@ To show this, we need a business rule.
 _The basket cannot contain more than 3 products._
 
 In the real world we probably don't want to enforce this limit, but for the sake of this demonstration we will.
-So we'll need to keep track of the number of products that were added. Without that number, we cannot determine if the limit is reached.
+So we'll need to keep track of the number of products that were added.
+Without that number, we cannot determine if the limit is reached.
 
 
-
-### Basket
+## Basket
 
 Let me present the entire basket aggregate:
 
@@ -66,6 +66,12 @@ final class Basket implements TracksEvents
         return $this->basketId;
     }
 
+    /** @return Identifies */
+    public function aggregateId()
+    {
+        return $this->basketId();
+    }
+
     /** @param BasketWasPickedUp $event */
     private function whenBasketWasPickedUp(BasketWasPickedUp $event)
     {
@@ -82,7 +88,7 @@ final class Basket implements TracksEvents
     /** @throws BasketLimitReached */
     private function guardProductLimit()
     {
-        if ($this->productCount == 3) {
+        if ($this->productCount === 3) {
             throw new \OverflowException('Limit of 3 products exceeded');
         }
     }
@@ -115,10 +121,10 @@ Applying the event means protecting the invariants and changing the state if nee
 It's important that this happens separately from recording the event!
 
 Recorded events are to be stored in an event store.
-When we later fetch those events and replay them to get our aggregate back, we need to apply them again _without_ getting recorded.
+When we later fetch those events and replay them to get our basket back, we need to apply them again _without_ getting recorded.
 Otherwise they are stored again and we've effectively duplicated all the events.
 
-The `recordThat(DomainEvent $event)` (provided by the `EventTrackingCapabilities` trait) will search for a method with the same name as the event preceded by "when".
+The `recordThat(DomainEvent $event)` (provided by the `EventTrackingCapabilities` trait) will search for a method with the same class-name as the event preceded by "when".
 In other words, for the event `ProductWasAddedToBasket` the method `whenProductWasAddedToBasket` is searched for.
 If the method exists, it will be called with the event as argument.
 
@@ -133,13 +139,14 @@ If the method exists, it will be called with the event as argument.
 
 This will set the identifier of the basket and set the current product count to zero.
 
+> Only the last part of the FQCN (fully qualified class-name) of an event is used.
+> So `My\First\EventHappened` should be applied by the method `whenEventHappened`.
+
 
 ### Product was added to basket
 
 ```php
-    /**
-     * @param ProductId $productId
-     */
+    /** @param ProductId $productId */
     public function addProduct(ProductId $productId)
     {
         $this->guardProductLimit();
@@ -150,7 +157,7 @@ This will set the identifier of the basket and set the current product count to 
     /** @throws BasketLimitReached */
     private function guardProductLimit()
     {
-        if ($this->productCount == 3) {
+        if ($this->productCount === 3) {
             throw new \OverflowException('Limit of 3 products exceeded');
         }
     }
@@ -174,6 +181,55 @@ But how does the current product count ever reach 3?
 
 By applying the event of course! Whenever a product is added, we increase the product count.
 
+
+### Usage
+
+Now we can start working with out basket:
+
+```php
+$basketId = BasketId::fromString('basket-1');
+$basket   = Basket::pickUp($basketId);
+
+$productId = ProductId('product-1');
+$basket->addProduct($productId);
+```
+
+[Next up](/event-sourcing/aggregate-manager) is storing our basket and retrieve it again.
+
+
 ## Internals
 
-Coming soon...
+Aggregates must implement the `TracksEvents` interface.
+This interface has a couple of methods:
+
+- `recordedEvents()`
+- `hasRecordedEvents()`
+- `eraseRecordedEvents()`
+
+The implementation of these methods is provided by the `EventTrackingCapabilities` trait.
+You don't need to worry about these unless you're implementing a custom (decorator for an) [event store](/event-sourcing/event-store).
+
+- `fromHistory(AggregateHistory $aggregateHistory)`
+
+This static factory method will reconstitute the aggregate from the history read from an event store.
+Its implementation is also covered by the `EventTrackingCapabilities` trait.
+
+- `aggregateId()`
+
+This method should return the identifier of the aggregate.
+As the library cannot know what that is, _you should implement it yourself_.
+Usually a proxy to the method returning the identifier is enough, like in our example:
+
+```php
+    /** @return Identifies */
+    public function aggregateId()
+    {
+        return $this->basketId();
+    }
+```
+
+Besides implementing most of the `TracksEvents` interface, the `EventTrackingCapabilities` trait has a powerful helper method:
+
+- `recordThat(DomainEvent $event)`
+
+Like we've seen in our basket, this method makes sure the event is recorded and applied.
