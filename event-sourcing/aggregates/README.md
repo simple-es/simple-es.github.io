@@ -12,9 +12,9 @@ This doesn't mean that an aggregate doesn't contain any state at all.
 We need to know which basket we're dealing with, so we keep track of its identifier.
 
 And we need the minimum amount of state to be able to protect invariants / enforce business rules.
-To show this, we need a business rule.
+To show this, we need a business rule:
 
-_The basket cannot contain more than 3 products._
+> _The basket cannot contain more than 3 products._
 
 In the real world we probably don't want to enforce this limit, but for the sake of this demonstration we will.
 So we'll need to keep track of the number of products that were added.
